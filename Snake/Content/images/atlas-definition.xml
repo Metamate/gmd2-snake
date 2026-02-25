@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+    <Texture>images/atlas</Texture>
+    <Regions>
+        <Region name="snake-1" x="0" y="0" width="20" height="20" />
+        <Region name="snake-2" x="0" y="20" width="20" height="20" />
+    </Regions>
+    <Animations>
+        <Animation name="snake-animation" delay="200">
+            <Frame region="snake-1" />
+            <Frame region="snake-2" />
+        </Animation>
+    </Animations>
+</TextureAtlas>

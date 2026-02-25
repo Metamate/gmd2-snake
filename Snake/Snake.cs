@@ -1,25 +1,27 @@
 using System;
+using GMDCore.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Snake;
 
-public class Snake
+public class Snake(AnimatedSprite animatedSprite)
 {
-    public Vector2 Position { get; set; }
+    private AnimatedSprite _sprite = animatedSprite;
+    private Vector2 _position = new(100, 100);
 
-    public Snake()
+    public void Update(GameTime gameTime)
     {
-        Position = new Vector2(100, 100);
+        _sprite.Update(gameTime);
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(Art.Pixel, new Rectangle((int)Position.X, (int)Position.Y, 16, 16), Color.White);
+        _sprite.Draw(spriteBatch, _position);
     }
 
     public void Move(Vector2 direction)
     {
-        Position += direction * 16;
+        _position += direction * _sprite.Width;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GMDCore;
+using GMDCore.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -19,18 +20,21 @@ public class Game1 : Core
     protected override void Initialize()
     {
         base.Initialize();
-        _snake = new Snake();
-        _inputHandler = new InputHandler(_snake);
     }
 
     protected override void LoadContent()
     {
-        Art.LoadContent(GraphicsDevice);
+        TextureAtlas atlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
+
+        AnimatedSprite snake = atlas.CreateAnimatedSprite("snake-animation");
+        _snake = new(snake);
+        _inputHandler = new(_snake);
     }
 
     protected override void Update(GameTime gameTime)
     {
         _inputHandler.HandleInput();
+        _snake.Update(gameTime);
 
         base.Update(gameTime);
     }
