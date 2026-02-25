@@ -2,11 +2,11 @@ using Microsoft.Xna.Framework;
 
 namespace Snake.Command;
 
-public class MoveCommand(Snake snake, Vector2 direction) : ICommand
+public class ReverseInputCommand(InputHandler inputHandler) : ICommand
 {
     public void Execute()
     {
-        snake.Move(direction);
+        inputHandler.ReverseInput();
     }
 
     public void Undo()
