@@ -30,7 +30,7 @@ public class TextureAtlas
 
     public void AddRegion(string name, int x, int y, int width, int height)
     {
-        TextureRegion region = new TextureRegion(Texture, x, y, width, height);
+        TextureRegion region = new(Texture, x, y, width, height);
         _regions.Add(name, region);
     }
 
@@ -132,7 +132,7 @@ public class TextureAtlas
                     }
                 }
 
-                Animation animation = new Animation(frames, delay);
+                Animation animation = new(frames, delay);
                 atlas.AddAnimation(name, animation);
             }
         }

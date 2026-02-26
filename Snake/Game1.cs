@@ -7,8 +7,8 @@ namespace Snake;
 
 public class Game1 : Core
 {
-    public const int VirtualWidth = 512;
-    public const int VirtualHeight = 288;
+    public const int VirtualWidth = 320;
+    public const int VirtualHeight = 180;
     private InputHandler _inputHandler;
     private Snake _snake;
     private Tilemap _tilemap;
@@ -59,7 +59,7 @@ public class Game1 : Core
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        SpriteBatch.Begin(transformMatrix: ScreenScaleMatrix);
+        SpriteBatch.Begin(transformMatrix: ScreenScaleMatrix, samplerState: SamplerState.PointClamp);
         _tilemap.Draw(SpriteBatch);
         _snake.Draw(SpriteBatch);
         SpriteBatch.End();
