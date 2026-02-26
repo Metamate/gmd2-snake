@@ -9,6 +9,7 @@ public class Snake(AnimatedSprite animatedSprite)
 {
     private AnimatedSprite _sprite = animatedSprite;
     private Vector2 _position = new(100, 100);
+    private Vector2 _newPosition;
 
     public void Update(GameTime gameTime)
     {
@@ -22,6 +23,17 @@ public class Snake(AnimatedSprite animatedSprite)
 
     public void Move(Vector2 direction)
     {
-        _position += direction * _sprite.Width;
+        _newPosition = _position + direction * _sprite.Width;
+
+        if (IsValidMove(_newPosition))
+        {
+            _position = _newPosition;
+        }
+    }
+
+    private static bool IsValidMove(Vector2 newPosition)
+    {
+        Rectangle screenBounds = new(0, 0, Game1.VirtualWidth, Game1.VirtualHeight);
+        return screenBounds.Contains(newPosition);
     }
 }
