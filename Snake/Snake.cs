@@ -39,7 +39,8 @@ public class Snake(AnimatedSprite animatedSprite)
 
     private static bool IsValidMove(Vector2 newPosition)
     {
-        //Rectangle screenBounds = new(0, 0, Game1.VirtualWidth, Game1.VirtualHeight);
+        Rectangle screenBounds = new(0, 0, Game1.VirtualWidth, Game1.VirtualHeight);
+        
         //return screenBounds.Contains(newPosition);
         return true; // Placeholder for now, we will implement collision detection later
     }

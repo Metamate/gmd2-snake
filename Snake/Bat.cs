@@ -70,4 +70,20 @@ public class Bat(AnimatedSprite animatedSprite)
         // Multiply the direction vector by the movement speed.
         _velocity = direction * Speed;
     }
+
+    public void RandomizePosition()
+    {
+        // Divide the width  and height of the screen into equal columns and
+        // rows based on the width and height of the bat.
+        int totalColumns = Game1.VirtualWidth / (int)_sprite.Width;
+        int totalRows = Game1.VirtualHeight / (int)_sprite.Height;
+
+        // Choose a random row and column based on the total number of each
+        int column = Random.Shared.Next(0, totalColumns);
+        int row = Random.Shared.Next(0, totalRows);
+
+        // Change the bat position by setting the x and y values equal to
+        // the column and row multiplied by the width and height.
+        Position = new Vector2(column * _sprite.Width, row * _sprite.Height);
+    }
 }
