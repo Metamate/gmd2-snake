@@ -24,13 +24,6 @@ public class Game1 : Core
     {
         base.Initialize();
 
-        _roomBounds = new Rectangle(
-             (int)_tilemap.TileWidth,
-             (int)_tilemap.TileHeight,
-             VirtualWidth - (int)_tilemap.TileWidth * 2,
-             VirtualHeight - (int)_tilemap.TileHeight * 2
-         );
-
         _bat.RandomizePosition();
         _bat.RandomizeVelocity();
 
@@ -45,11 +38,18 @@ public class Game1 : Core
         TextureAtlas atlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
         AnimatedSprite snake = atlas.CreateAnimatedSprite("snake-animation");
         AnimatedSprite bat = atlas.CreateAnimatedSprite("bat-animation");
-        _snake = new(snake);
+        _tilemap = Tilemap.FromFile(Content, "images/tilemap-definition.xml");
+
+        _roomBounds = new Rectangle(
+            (int)_tilemap.TileWidth,
+            (int)_tilemap.TileHeight,
+            VirtualWidth - (int)_tilemap.TileWidth * 2,
+            VirtualHeight - (int)_tilemap.TileHeight * 2
+        );
+
+        _snake = new(snake, _roomBounds);
         _bat = new(bat);
         _inputHandler = new(_snake);
-
-        _tilemap = Tilemap.FromFile(Content, "images/tilemap-definition.xml");
     }
 
     protected override void Update(GameTime gameTime)
