@@ -30,16 +30,12 @@ public class Snake(AnimatedSprite animatedSprite, Rectangle roomBounds)
 
     public void Move(Vector2 direction)
     {
-        _newPosition = Position + direction * _sprite.Width;
-
-        if (IsValidMove(_newPosition))
-        {
-            Position = _newPosition;
-        }
+        Position += direction * _sprite.Width;
     }
 
-    private bool IsValidMove(Vector2 newPosition)
+    public bool IsValidMove(Vector2 direction)
     {
+        Vector2 newPosition = Position + direction * _sprite.Width;
         return _roomBounds.Contains(newPosition);
     }
 }

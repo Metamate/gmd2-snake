@@ -11,6 +11,6 @@ public class MoveCommand(Snake snake, Vector2 direction) : ICommand
 
     public void Undo()
     {
-
+        snake.Move(-direction);
     }
 }

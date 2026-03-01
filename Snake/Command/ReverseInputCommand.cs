@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 
 namespace Snake.Command;
 
-public class ReverseInputCommand(InputHandler inputHandler) : ICommand
+public class ReverseInputCommand(InputHandlerSimple inputHandler) : ICommand
 {
     public void Execute()
     {
@@ -11,6 +11,6 @@ public class ReverseInputCommand(InputHandler inputHandler) : ICommand
 
     public void Undo()
     {
-
+        inputHandler.ReverseInput();
     }
 }

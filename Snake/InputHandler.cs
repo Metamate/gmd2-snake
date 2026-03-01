@@ -1,54 +1,57 @@
+using System.Numerics;
 using GMDCore;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Snake.Command;
 
 namespace Snake;
 
-public class InputHandler
+public class InputHandler(Snake snake)
 {
-    public ICommand ButtonA { get; set; }
-    public ICommand ButtonD { get; set; }
-    public ICommand ButtonW { get; set; }
-    public ICommand ButtonS { get; set; }
-    public ICommand ButtonR { get; set; }
-
-    public InputHandler(Snake snake)
-    {
-        ButtonA = new MoveCommand(snake, -Vector2.UnitX);
-        ButtonD = new MoveCommand(snake, Vector2.UnitX);
-        ButtonW = new MoveCommand(snake, -Vector2.UnitY);
-        ButtonS = new MoveCommand(snake, Vector2.UnitY);
-        ButtonR = new ReverseInputCommand(this);
-    }
-
     public void HandleInput()
     {
         if (Core.Input.Keyboard.WasKeyJustPressed(Keys.A))
         {
-            ButtonA.Execute();
+            RunInputCommand(-Vector2.UnitX);
         }
         else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.D))
         {
-            ButtonD.Execute();
+            RunInputCommand(Vector2.UnitX);
         }
         else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.W))
         {
-            ButtonW.Execute();
+            RunInputCommand(-Vector2.UnitY);
         }
         else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.S))
         {
-            ButtonS.Execute();
+            RunInputCommand(Vector2.UnitY);
         }
         else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.R))
         {
-            ButtonR.Execute();
+            //CommandInvoker.ExecuteCommand(new ReverseInputCommand(this));
+        }
+        else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.Q))
+        {
+            CommandInvoker.UndoCommand();
+        }
+        else if (Core.Input.Keyboard.WasKeyJustPressed(Keys.E))
+        {
+            CommandInvoker.RedoCommand();
         }
     }
 
-    public void ReverseInput()
+    private void RunInputCommand(Vector2 direction)
     {
-        (ButtonD, ButtonA) = (ButtonA, ButtonD);
-        (ButtonW, ButtonS) = (ButtonS, ButtonW);
+        if (snake.IsValidMove(direction))
+        {
+            CommandInvoker.ExecuteCommand(new MoveCommand(snake, direction));
+        }
     }
+
+    // public void ReverseInput()
+    // {
+    //     (ButtonD, ButtonA) = (ButtonA, ButtonD);
+    //     (ButtonW, ButtonS) = (ButtonS, ButtonW);
+    // }
+
+
 }
