@@ -6,65 +6,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Snake;
 
-public class Bat
+public class Bat(AnimatedSprite animatedSprite)
 {
-    private AnimatedSprite _sprite;
+    private const float Speed = 100f;
+    private AnimatedSprite _sprite = animatedSprite;
     private Vector2 _velocity;
     public Vector2 Position { get; set; }
     public Circle Bounds => new(
-        (int)(Position.X + (Width * 0.5f)),
-        (int)(Position.Y + (Height * 0.5f)),
-        (int)(Width * 0.5f)
+        (int)(Position.X + (_sprite.Width * 0.5f)),
+        (int)(Position.Y + (_sprite.Height * 0.5f)),
+        (int)(_sprite.Width * 0.5f)
     );
-    public float Width => _sprite.Width;
-    public float Height => _sprite.Height;
-
-    public Bat(AnimatedSprite sprite)
-    {
-        _sprite = sprite;
-        _velocity = RandomBatVelocity();
-    }
 
     public void Update(GameTime gameTime)
     {
-        Vector2 normal = Vector2.Zero;
-        Vector2 newPosition = Position + _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        // Use distance based checks to determine if the bat is within the
-        // bounds of the game screen, and if it is outside that screen edge,
-        // reflect it about the screen edge normal.
-        if (Bounds.Left < Game1.RoomBounds.Left)
-        {
-            normal.X = Vector2.UnitX.X;
-            newPosition = new Vector2(Game1.RoomBounds.Left, Position.Y);
-        }
-        else if (Bounds.Right > Game1.RoomBounds.Right)
-        {
-            normal.X = -Vector2.UnitX.X;
-            newPosition = new Vector2(Game1.RoomBounds.Right - Width, Position.Y);
-        }
-
-        if (Bounds.Top < Game1.RoomBounds.Top)
-        {
-            normal.Y = Vector2.UnitY.Y;
-            newPosition = new Vector2(Position.X, Game1.RoomBounds.Top);
-        }
-        else if (Bounds.Bottom > Game1.RoomBounds.Bottom)
-        {
-            normal.Y = -Vector2.UnitY.Y;
-            newPosition = new Vector2(Position.X, Game1.RoomBounds.Bottom - Height);
-        }
-
-        // If the normal is anything but Vector2.Zero, this means the bat had
-        // moved outside the screen edge so we should reflect it about the
-        // normal.
-        if (normal != Vector2.Zero)
-        {
-            normal.Normalize();
-            _velocity = Vector2.Reflect(_velocity, normal);
-        }
-
-        Position = newPosition;
+        Position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         _sprite.Update(gameTime);
     }
 
@@ -73,7 +29,35 @@ public class Bat
         _sprite.Draw(spriteBatch, Position);
     }
 
-    private Vector2 RandomBatVelocity()
+    public void Bounce(Vector2 normal)
+    {
+        Vector2 newPosition = Position;
+
+        // Adjust the position based on the normal to prevent sticking to walls.
+        if (normal.X != 0)
+        {
+            // We are bouncing off a vertical wall (left/right).
+            // Move slightly away from the wall in the direction of the normal.
+            newPosition.X += normal.X * (_sprite.Width * 0.1f);
+        }
+
+        if (normal.Y != 0)
+        {
+            // We are bouncing off a horizontal wall (top/bottom).
+            // Move slightly way from the wall in the direction of the normal.
+            newPosition.Y += normal.Y * (_sprite.Height * 0.1f);
+        }
+
+        Position = newPosition;
+
+        // Normalize before reflecting
+        normal.Normalize();
+
+        // Apply reflection based on the normal.
+        _velocity = Vector2.Reflect(_velocity, normal);
+    }
+
+    public void RandomizeVelocity()
     {
         // Generate a random angle.
         float angle = (float)(Random.Shared.NextDouble() * Math.PI * 2);
@@ -84,8 +68,6 @@ public class Bat
         Vector2 direction = new(x, y);
 
         // Multiply the direction vector by the movement speed.
-        return direction * 100f;
+        _velocity = direction * Speed;
     }
-
-
 }
