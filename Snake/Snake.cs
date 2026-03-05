@@ -10,7 +10,6 @@ public class Snake(AnimatedSprite animatedSprite, Rectangle roomBounds)
 {
     private AnimatedSprite _sprite = animatedSprite;
     private Rectangle _roomBounds = roomBounds;
-    private Vector2 _newPosition;
     public Vector2 Position { get; set; }
     public Circle Bounds => new(
         (int)(Position.X + (_sprite.Width * 0.5f)),
