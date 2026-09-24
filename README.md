@@ -12,11 +12,12 @@ steps (e.g. with a diff tool) to see exactly what changed.
 | `Snake1` | Texture atlas | `TextureAtlas` loads named regions from `atlas-definition.xml` |
 | `Snake2` | Sprites | `Sprite` wraps a region with color, rotation, scale and origin |
 | `Snake3` | Animation | `AnimatedSprite` plays animations defined in the atlas |
-| `Snake4` | Input | A `Snake` class that moves on the grid, polling the keyboard directly |
-| `Snake5` | Command pattern | Buttons are bound to `ICommand` objects; `R` reverses the controls by swapping commands |
-| `Snake6` | Undo & redo | Commands can `Undo()`; a `CommandInvoker` keeps the history |
-| `Snake7` | Collision detection | A bouncing `Bat` with circle collision; the snake eats the bat |
-| `Snake8` | Tilemap | The room is drawn from `tilemap-definition.xml` and the walls limit movement |
+| `Snake4` | The room | The room is drawn from `tilemap-definition.xml` |
+| `Snake5` | Fixed-tick movement | A `Snake` made of grid cells moves by itself, one cell per 200 ms tick; the game reads the keys directly |
+| `Snake6` | Input as actions | A `GameController` maps W/A/S/D and the arrow keys to actions |
+| `Snake7` | Input buffering | Turns are queued and used one per tick, so quick key presses aren't lost |
+| `Snake8` | The bat | A bouncing bat with circle collision; eating it makes the snake grow |
+| `Snake9` | Game over | Walls and the snake's own body end the game (the finished game) |
 
 All steps share the **GMDCore** library, which contains the final versions of the reusable
 classes (`TextureAtlas`, `Sprite`, `AnimatedSprite`, `Tilemap`, `Circle`, input, …).
@@ -54,9 +55,8 @@ in `Builder.cs`.
 
 | Key | Action |
 | --- | --- |
-| `W` `A` `S` `D` | Move (from `Snake4`) |
-| `R` | Reverse the controls (from `Snake5`) |
-| `Q` / `E` | Undo / redo (from `Snake6`) |
+| `W` `A` `S` `D` | Turn (from `Snake5`) |
+| Arrow keys | Turn (from `Snake6`) |
 | `Esc` | Quit |
 
 ## Running a step
@@ -64,7 +64,7 @@ in `Builder.cs`.
 Requires the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ```sh
-dotnet run --project Snake8
+dotnet run --project Snake9
 ```
 
 Or open `Snake.slnx` and choose the step to run.

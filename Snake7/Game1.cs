@@ -9,45 +9,31 @@ public class Game1 : Core
 {
     public const int VirtualWidth = 320;
     public const int VirtualHeight = 180;
-    private InputHandler _inputHandler;
+    private Tilemap _tilemap;
+    private Rectangle _room;
     private Snake _snake;
-    private Bat _bat;
-    private Rectangle _roomBounds;
 
     public Game1() : base("Snake", 1280, 720, VirtualWidth, VirtualHeight)
     {
-    }
-
-    protected override void Initialize()
-    {
-        base.Initialize();
-
-        _bat.RandomizePosition();
-        _bat.RandomizeVelocity();
-
-        // Start the snake in the center of the screen, aligned to the 20x20 grid.
-        _snake.Position = new Vector2(160, 80);
     }
 
     protected override void LoadContent()
     {
         TextureAtlas atlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
 
-        // For now, the room is the whole screen.
-        _roomBounds = new Rectangle(0, 0, VirtualWidth, VirtualHeight);
+        // The room is data too: the tilemap definition lists the tile for every cell.
+        _tilemap = Tilemap.FromFile(Content, "images/tilemap-definition.xml");
 
-        _snake = new Snake(atlas.CreateAnimatedSprite("snake-animation"), _roomBounds);
-        _bat = new Bat(atlas.CreateAnimatedSprite("bat-animation"), _roomBounds);
-        _inputHandler = new InputHandler(_snake);
+        // The room is the area inside the walls. The walls are one cell thick, except the top
+        // wall, which is two cells tall.
+        _room = new Rectangle(1, 2, _tilemap.Columns - 2, _tilemap.Rows - 3);
+        _snake = new Snake(atlas.CreateAnimatedSprite("snake-animation"), (int)_tilemap.TileWidth, _room);
     }
 
     protected override void Update(GameTime gameTime)
     {
-        _inputHandler.HandleInput();
+        HandleInput();
         _snake.Update(gameTime);
-        _bat.Update(gameTime);
-
-        CollisionChecks();
 
         base.Update(gameTime);
     }
@@ -57,40 +43,30 @@ public class Game1 : Core
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         SpriteBatch.Begin(transformMatrix: ScreenScaleMatrix, samplerState: SamplerState.PointClamp);
+        _tilemap.Draw(SpriteBatch);
         _snake.Draw(SpriteBatch);
-        _bat.Draw(SpriteBatch);
         SpriteBatch.End();
 
         base.Draw(gameTime);
     }
 
-    private void CollisionChecks()
+    private void HandleInput()
     {
-        // If the snake collides with the bat, the snake eats the bat and a new bat appears.
-        if (_snake.Bounds.Intersects(_bat.Bounds))
+        if (GameController.Up)
         {
-            _bat.RandomizePosition();
-            _bat.RandomizeVelocity();
+            _snake.Turn(Direction.Up);
         }
-
-        // If the bat leaves the room, it has hit a wall and bounces off it.
-        // The normal points away from the wall, back into the room.
-        if (_bat.Bounds.Top < _roomBounds.Top)
+        else if (GameController.Down)
         {
-            _bat.Bounce(Vector2.UnitY);
+            _snake.Turn(Direction.Down);
         }
-        else if (_bat.Bounds.Bottom > _roomBounds.Bottom)
+        else if (GameController.Left)
         {
-            _bat.Bounce(-Vector2.UnitY);
+            _snake.Turn(Direction.Left);
         }
-
-        if (_bat.Bounds.Left < _roomBounds.Left)
+        else if (GameController.Right)
         {
-            _bat.Bounce(Vector2.UnitX);
-        }
-        else if (_bat.Bounds.Right > _roomBounds.Right)
-        {
-            _bat.Bounce(-Vector2.UnitX);
+            _snake.Turn(Direction.Right);
         }
     }
 }

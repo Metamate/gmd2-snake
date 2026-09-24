@@ -4,7 +4,7 @@ using GMDCore.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Snake7;
+namespace Snake9;
 
 public class Bat(AnimatedSprite sprite, Rectangle roomBounds)
 {

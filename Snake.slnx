@@ -10,4 +10,5 @@
   <Project Path="Snake6/Snake6.csproj" />
   <Project Path="Snake7/Snake7.csproj" />
   <Project Path="Snake8/Snake8.csproj" />
+  <Project Path="Snake9/Snake9.csproj" />
 </Solution>

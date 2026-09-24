@@ -9,50 +9,37 @@ public class Game1 : Core
 {
     public const int VirtualWidth = 320;
     public const int VirtualHeight = 180;
-    private InputHandler _inputHandler;
-    private Snake _snake;
-    private Bat _bat;
     private Tilemap _tilemap;
+    private Rectangle _room;
+    private Snake _snake;
     private Rectangle _roomBounds;
+    private Bat _bat;
 
     public Game1() : base("Snake", 1280, 720, VirtualWidth, VirtualHeight)
     {
     }
 
-    protected override void Initialize()
-    {
-        base.Initialize();
-
-        _bat.RandomizePosition();
-        _bat.RandomizeVelocity();
-
-        // Start the snake on the center tile of the tilemap.
-        int centerRow = _tilemap.Rows / 2;
-        int centerColumn = _tilemap.Columns / 2;
-        _snake.Position = new Vector2(centerColumn * _tilemap.TileWidth, centerRow * _tilemap.TileHeight);
-    }
-
     protected override void LoadContent()
     {
         TextureAtlas atlas = TextureAtlas.FromFile(Content, "images/atlas-definition.xml");
+
+        // The room is data too: the tilemap definition lists the tile for every cell.
         _tilemap = Tilemap.FromFile(Content, "images/tilemap-definition.xml");
 
-        // The room is the area inside the walls: the tilemap minus one tile on each side.
-        _roomBounds = new Rectangle(
-            (int)_tilemap.TileWidth,
-            (int)_tilemap.TileHeight,
-            VirtualWidth - (int)_tilemap.TileWidth * 2,
-            VirtualHeight - (int)_tilemap.TileHeight * 2
-        );
+        // The room is the area inside the walls. The walls are one cell thick, except the top
+        // wall, which is two cells tall.
+        _room = new Rectangle(1, 2, _tilemap.Columns - 2, _tilemap.Rows - 3);
+        _snake = new Snake(atlas.CreateAnimatedSprite("snake-animation"), (int)_tilemap.TileWidth, _room);
 
-        _snake = new Snake(atlas.CreateAnimatedSprite("snake-animation"), _roomBounds);
+        int tileSize = (int)_tilemap.TileWidth;
+        _roomBounds = new Rectangle(_room.X * tileSize, _room.Y * tileSize, _room.Width * tileSize, _room.Height * tileSize);
         _bat = new Bat(atlas.CreateAnimatedSprite("bat-animation"), _roomBounds);
-        _inputHandler = new InputHandler(_snake);
+        RespawnBat();
     }
 
     protected override void Update(GameTime gameTime)
     {
-        _inputHandler.HandleInput();
+        HandleInput();
         _snake.Update(gameTime);
         _bat.Update(gameTime);
 
@@ -74,13 +61,33 @@ public class Game1 : Core
         base.Draw(gameTime);
     }
 
+    private void HandleInput()
+    {
+        if (GameController.Up)
+        {
+            _snake.Turn(Direction.Up);
+        }
+        else if (GameController.Down)
+        {
+            _snake.Turn(Direction.Down);
+        }
+        else if (GameController.Left)
+        {
+            _snake.Turn(Direction.Left);
+        }
+        else if (GameController.Right)
+        {
+            _snake.Turn(Direction.Right);
+        }
+    }
+
     private void CollisionChecks()
     {
-        // If the snake collides with the bat, the snake eats the bat and a new bat appears.
+        // If the snake catches the bat, it eats the bat and grows, and a new bat appears.
         if (_snake.Bounds.Intersects(_bat.Bounds))
         {
-            _bat.RandomizePosition();
-            _bat.RandomizeVelocity();
+            _snake.Grow();
+            RespawnBat();
         }
 
         // If the bat leaves the room, it has hit a wall and bounces off it.
@@ -102,5 +109,11 @@ public class Game1 : Core
         {
             _bat.Bounce(-Vector2.UnitX);
         }
+    }
+
+    private void RespawnBat()
+    {
+        _bat.RandomizePosition();
+        _bat.RandomizeVelocity();
     }
 }
