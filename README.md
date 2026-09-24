@@ -21,6 +21,15 @@ steps (e.g. with a diff tool) to see exactly what changed.
 All steps share the **GMDCore** library, which contains the final versions of the reusable
 classes (`TextureAtlas`, `Sprite`, `AnimatedSprite`, `Tilemap`, `Circle`, input, …).
 
+## New in GMDCore
+
+Compared with the core in [gmd2-flappy](https://github.com/Metamate/gmd2-flappy):
+
+- `Graphics/TextureRegion`, `TextureAtlas`, `Sprite`, `Animation`, `AnimatedSprite`: parts
+  of a texture, sprites and frame animation, defined in XML.
+- `Graphics/Tileset`, `Tilemap`: a grid of tile IDs drawn from a tileset, defined in XML.
+- `Circle`: circle-circle collision.
+
 ## Content
 
 All steps also share the same assets and the same **content builder** (MonoGame 3.8.5+):
